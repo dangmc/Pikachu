@@ -1,0 +1,11 @@
+/home/dangmc/Documents/Game/Pikachu/bin/Debug/netcoreapp2.2/Pikachu.deps.json
+/home/dangmc/Documents/Game/Pikachu/bin/Debug/netcoreapp2.2/Pikachu.runtimeconfig.json
+/home/dangmc/Documents/Game/Pikachu/bin/Debug/netcoreapp2.2/Pikachu.runtimeconfig.dev.json
+/home/dangmc/Documents/Game/Pikachu/bin/Debug/netcoreapp2.2/Pikachu.dll
+/home/dangmc/Documents/Game/Pikachu/bin/Debug/netcoreapp2.2/Pikachu.pdb
+/home/dangmc/Documents/Game/Pikachu/obj/Debug/netcoreapp2.2/Pikachu.csprojAssemblyReference.cache
+/home/dangmc/Documents/Game/Pikachu/obj/Debug/netcoreapp2.2/Pikachu.csproj.CoreCompileInputs.cache
+/home/dangmc/Documents/Game/Pikachu/obj/Debug/netcoreapp2.2/Pikachu.AssemblyInfoInputs.cache
+/home/dangmc/Documents/Game/Pikachu/obj/Debug/netcoreapp2.2/Pikachu.AssemblyInfo.cs
+/home/dangmc/Documents/Game/Pikachu/obj/Debug/netcoreapp2.2/Pikachu.dll
+/home/dangmc/Documents/Game/Pikachu/obj/Debug/netcoreapp2.2/Pikachu.pdb

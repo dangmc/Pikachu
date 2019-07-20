@@ -95,7 +95,12 @@ public class PikachuMap
 	}
 
 
-
+	/* 
+	Checking path from (x1, y1) to (x2, y2)
+	return Tuple<bool, List<Tuple<int, int>>>
+			Item1: Has path or not
+			Item2: List of position from (x1, y1) to (x1, y2), return empty list if Item = False
+	*/
 	public Tuple<bool, List<Tuple<int, int>>> HasPath(int x1, int y1, int x2, int y2) {
 
 		List<Tuple<int, int>> path = new List<Tuple<int, int>>();

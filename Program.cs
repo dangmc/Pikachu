@@ -170,7 +170,7 @@ public class PikachuMap
 		for (int i = x2; i >= 1; i--) {
 			a[i, y2] = a[i-1, y2];
 		}
-		return true;
+		return IsFinish();
 	}
 
 	public bool MoveUp(int x1, int y1, int x2, int y2) {
@@ -185,7 +185,7 @@ public class PikachuMap
 		for (int i = x2; i <= n; i++) {
 			a[i, y2] = a[i+1, y2];
 		}
-		return true;
+		return IsFinish();
 	}
 
 	public bool MoveLeft(int x1, int y1, int x2, int y2) {
@@ -200,7 +200,7 @@ public class PikachuMap
 		for (int j = y2; j <= m; j++) {
 			a[x2, j] = a[x2, j + 1];
 		}
-		return true;
+		return IsFinish();
 	}
 
 	public bool MoveRight(int x1, int y1, int x2, int y2) {
@@ -215,9 +215,52 @@ public class PikachuMap
 		for (int j = y2; j >= 1; j--) {
 			a[x2, j] = a[x2, j - 1];
 		}
-		return true;
+		return IsFinish();
 	}
 
+
+	public bool MoveCenterUpDown(int x1, int y1, int x2, int y2) {
+		Tuple<int, int, int, int> tmp = SwapMinX(x1, y1, x2, y2);
+		x1 = tmp.Item1;
+		y1 = tmp.Item2;
+		x2 = tmp.Item3;
+		y2 = tmp.Item4;
+		int mid = (int) n / 2;
+		if (x1 > mid) {
+			MoveUp(x1, y1, x2, y2);
+		} else if (x2 <= mid){
+			MoveDown(x1, y1, x2, y2);
+		} else {
+			MoveDown(x1, y1, n + 1, 0);
+			MoveUp(x2, y2, 0, 0);
+		} 
+		return IsFinish();
+	}
+
+	public bool MoveCenterLeftRight(int x1, int y1, int x2, int y2) {
+		Tuple<int, int, int, int> tmp = SwapMinY(x1, y1, x2, y2);
+		x1 = tmp.Item1;
+		y1 = tmp.Item2;
+		x2 = tmp.Item3;
+		y2 = tmp.Item4;
+		int mid = (int) m / 2;
+		if (y1 > mid) {
+			MoveLeft(x1, y1, x2, y2);
+		} else if (y2 <= mid){
+			MoveRight(x1, y1, x2, y2);
+		} else {
+			MoveRight(x1, y1, 0, m + 1);
+			MoveLeft(x2, y2, 0, 0);
+		} 
+		return IsFinish();
+	}
+	public bool IsFinish() {
+		for (int i = 1; i <= n; i++)
+			for (int j = 1; j <= m; j++)
+				if (a[i, j] != -1)
+					return false;
+		return true;
+	}
 
 	public void LoadMap(string filename) {
   
@@ -252,20 +295,17 @@ public class PikachuMap
 		}
 	}
 
-	public bool MoveCenter(int x1, int y1, int x2, int y2) {
-		return true;
-	}
-
 	public static void Main()
 	{
 		PikachuMap p = new PikachuMap(9, 16, 30);
 		p.LoadMap("map.txt");
 		p.ShowMap();
-		Tuple<bool, List<Tuple<int, int>>> res = p.HasPath(4, 6, 3, 10);
+		Tuple<bool, List<Tuple<int, int>>> res = p.HasPath(7, 9, 3, 10);
 		Console.WriteLine(res.Item1);
-		foreach (Tuple<int, int> pos in res.Item2) {
-			Console.WriteLine(pos);
-		}
+		// foreach (Tuple<int, int> pos in res.Item2) {
+		// 	Console.WriteLine(pos);
+		// }
+		p.MoveCenterUpDown(7, 9, 3, 10);
 		p.ShowMap();
 		
 	}

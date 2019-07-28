@@ -26,6 +26,15 @@ public class PikachuMap
 		m = m_;
 		noc = noc_;
 		a = new int[n + 2, m + 2];
+		// padding
+		for (int i = 0; i <= n+1; i++) {
+			a[i, 0] = -1;
+			a[i, m+1] = -1;
+		}
+		for (int j = 0; j <= m+1; j++) {
+			a[0, j] = -1;
+			a[n+1, j] = -1;
+		}
 	}
 
 	public void CreateMap() {
@@ -141,7 +150,7 @@ public class PikachuMap
 			for (int i = 0; i < 4; i++) {
 				int x = u.x + dx[i];
 				int y = u.y + dy[i];
-				if (x >= 0 && x <= n && y >= 0 && y <= m && flag[x, y] == 0) { 
+				if (x >= 0 && x <= n + 1 && y >= 0 && y <= m + 1 && flag[x, y] == 0) { 
 					if (u.d == i) {
 						q.Enqueue(new Point(x, y, u.n_d, u.d));
 						trace.Add(new Tuple<int, int>(x, y), new Tuple<int, int>(u.x, u.y));
@@ -274,14 +283,6 @@ public class PikachuMap
 		 		a[row, i + 1] = Convert.ToInt32(line[i]);
 		 	row += 1;
 
-		}
-		for (int i = 0; i <= n+1; i++) {
-			a[i, 0] = -1;
-			a[i, m+1] = -1;
-		}
-		for (int j = 0; j <= m+1; j++) {
-			a[0, j] = -1;
-			a[n+1, j] = -1;
 		}
 	}
 

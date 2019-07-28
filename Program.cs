@@ -115,49 +115,58 @@ public class PikachuMap
 		List<Tuple<int, int>> path = new List<Tuple<int, int>>();
 		if (a[x1, y1] != a[x2, y2])
 			return new Tuple<bool, List<Tuple<int, int>>> (false, path);
-		Dictionary<Tuple<int, int>, Tuple<int, int>> trace = new Dictionary<Tuple<int, int>, Tuple<int, int>>();
+		Dictionary<Tuple<int, int, int, int>, Tuple<int, int, int, int>> trace = new Dictionary<Tuple<int, int, int, int>, Tuple<int, int, int, int>>();
 		int[] dx = new int[] {0, -1, 0, 1};
 		int[] dy = new int[] {-1, 0, 1, 0};
-		int[,] flag = new int[n + 2, m + 2];
+		int[,,,] flag = new int[n + 2, m + 2, 3, 4];
 		for (int i = 1; i <= n; i++)
 			for (int j = 1; j <= m; j++)
-				if (a[i, j] != - 1)
-					flag[i, j] = 1;
-		flag[x2, y2] = 0;
+				if (a[i, j] != - 1) 
+					for (int k = 0; k < 4; k++) {
+						flag[i, j, 0, k] = 1;
+						flag[i, j, 1, k] = 1;
+						flag[i, j, 2, k] = 1;
+					}
+		for (int k = 0; k < 4; k++) {
+			flag[x2, y2, 0, k] = 0;
+			flag[x2, y2, 1, k] = 0;
+			flag[x2, y2, 2, k] = 0;
+		}
 		Queue q = new Queue();
 		for (int i = 0; i < 4; i++) {
 			int x = x1 + dx[i];
 			int y = y1 + dy[i];
-			if (x >= 0 && x <= n + 1 && y >= 0 && y <= m + 1 && flag[x, y] == 0) {
+			if (x >= 0 && x <= n + 1 && y >= 0 && y <= m + 1 && flag[x, y, 0, i] == 0) {
 				q.Enqueue(new Point(x, y, 0, i));
-				trace.Add(new Tuple<int, int>(x, y), new Tuple<int, int>(x1, y1));
+				trace.Add(new Tuple<int, int, int, int>(x, y, 0, i), new Tuple<int, int, int, int>(x1, y1, 0, i));
 			}
 		}
 		while (q.Count != 0) {
 			Point u = (Point) q.Dequeue();
-			flag[u.x, u.y] = 1;
 			if (u.x == x2 && u.y == y2) {
 				int x = u.x;
 				int y = u.y;
-				Tuple<int, int> key = new Tuple<int ,int> (x, y);
-				path.Add(key);
+				Tuple<int, int, int, int> key = new Tuple<int ,int, int, int> (x, y, u.n_d, u.d);
+				path.Add(new Tuple<int, int> (key.Item1, key.Item2));
 				while (trace.ContainsKey(key)) {
 					key = trace[key];
-					path.Add(key);
+					path.Add(new Tuple<int, int> (key.Item1, key.Item2));
 				}
 				return new Tuple<bool, List<Tuple<int, int>>> (true, path);
 			}
 			for (int i = 0; i < 4; i++) {
 				int x = u.x + dx[i];
 				int y = u.y + dy[i];
-				if (x >= 0 && x <= n + 1 && y >= 0 && y <= m + 1 && flag[x, y] == 0) { 
-					if (u.d == i) {
+				if (x >= 0 && x <= n + 1 && y >= 0 && y <= m + 1) {
+					if (u.d == i && flag[x, y, u.n_d, i] == 0) {
+						flag[x, y, u.n_d, u.d] = 1;
 						q.Enqueue(new Point(x, y, u.n_d, u.d));
-						trace.Add(new Tuple<int, int>(x, y), new Tuple<int, int>(u.x, u.y));
+						trace.Add(new Tuple<int, int, int, int>(x, y, u.n_d, i), new Tuple<int, int, int, int>(u.x, u.y, u.n_d, u.d));
 					}
-					else if (u.n_d + 1 <= 2) {
+					else if (u.n_d + 1 <= 2 && flag[x, y, u.n_d + 1, i] == 0) {
+						flag[x, y, u.n_d + 1, i] = 1;
 						q.Enqueue(new Point(x, y, u.n_d + 1, i));
-						trace.Add(new Tuple<int, int>(x, y), new Tuple<int, int>(u.x, u.y));
+						trace.Add(new Tuple<int, int, int, int>(x, y, u.n_d + 1, i), new Tuple<int, int, int, int>(u.x, u.y, u.n_d, u.d));
 					}
 				}
 			}
@@ -301,12 +310,12 @@ public class PikachuMap
 		PikachuMap p = new PikachuMap(9, 16, 30);
 		p.LoadMap("map.txt");
 		p.ShowMap();
-		Tuple<bool, List<Tuple<int, int>>> res = p.HasPath(7, 9, 3, 10);
+		Tuple<bool, List<Tuple<int, int>>> res = p.HasPath(4, 6, 3, 10);
 		Console.WriteLine(res.Item1);
-		// foreach (Tuple<int, int> pos in res.Item2) {
-		// 	Console.WriteLine(pos);
-		// }
-		p.MoveCenterUpDown(7, 9, 3, 10);
+		foreach (Tuple<int, int> pos in res.Item2) {
+			Console.WriteLine(pos);
+		}
+		p.MoveCenterUpDown(4, 6, 3, 10);
 		p.ShowMap();
 		
 	}

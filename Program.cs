@@ -128,7 +128,7 @@ public class PikachuMap
 		for (int i = 0; i < 4; i++) {
 			int x = x1 + dx[i];
 			int y = y1 + dy[i];
-			if (x >= 0 && x <= n && y >= 0 && y <= m && flag[x, y] == 0) {
+			if (x >= 0 && x <= n + 1 && y >= 0 && y <= m + 1 && flag[x, y] == 0) {
 				q.Enqueue(new Point(x, y, 0, i));
 				trace.Add(new Tuple<int, int>(x, y), new Tuple<int, int>(x1, y1));
 			}

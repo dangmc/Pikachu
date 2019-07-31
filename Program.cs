@@ -17,9 +17,13 @@ public class Point
 
 public class PikachuMap
 {
-	int[,] a;
-	int n, m;
+	int[,] a; // map status
+	int n, m; // map size
 	int noc; // number of characters
+	int not; // number of twin character
+	int level;
+	private List<int> map = new List<int>();
+
 
 	public PikachuMap(int n_, int m_, int noc_) {
 		n = n_;
@@ -35,18 +39,22 @@ public class PikachuMap
 			a[0, j] = -1;
 			a[n+1, j] = -1;
 		}
-	}
-
-	public void CreateMap() {
-		List<int> map = new List<int>();
-		Random r1 = new Random(1);
-		Random r2 = new Random(100);
-		Random r3 = new Random(50);
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < m; j++) 
 				map.Add(i * m + j);
+	}
+
+	public void SetLevel(int lv) {
+		level = lv;
+	}
+
+
+	public void CreateMap() {
+		Random r1 = new Random(level);
+		Random r2 = new Random(r1.Next(100));
 		int last = n*m;
-		for (int i = 0; i < last/2; i++) {
+		not = last / 2;
+		for (int i = 0; i < not; i++) {
 			int id = r1.Next(noc);
 			int p = r2.Next(last);
 			a[map[p]/m + 1, map[p]%m + 1] = id;
@@ -54,15 +62,6 @@ public class PikachuMap
 			map[p] = map[last - 1];
 			map[last - 1] = tmp;
 			last -= 1;
-
-			for (int k = 0; k < last; k++) {
-				int id1 = r3.Next(last);
-				int id2 = r3.Next(last);
-				tmp = map[id1];
-				map[id1] = map[id2];
-				map[id2] = tmp;
-			}
-
 			p = r2.Next(last);
 			a[map[p]/m + 1, map[p]%m + 1] = id;
 			tmp = map[p];
@@ -74,6 +73,36 @@ public class PikachuMap
 
 	}
 
+	public void ReCreateMap() {
+		Random r1 = new Random(level);
+		Random r2 = new Random(r1.Next(100));
+		int last = 0;
+		List<int> rmap = new List<int>();
+		for (int i = 0; i < n; i++)
+			for (int j = 0; j < m; j++) 
+				if (a[i+1, j+1] != -1) {
+					rmap.Add(i * m + j);
+					last += 1;
+				}
+		not = last / 2;
+		for (int i = 0; i < not; i++) {
+			int id = r1.Next(noc);
+			// Console.WriteLine("Turn {0}, id = {1}", i, id);
+			int p = r2.Next(last);
+			a[rmap[p]/m + 1, rmap[p]%m + 1] = id;
+			int tmp = rmap[p];
+			rmap[p] = rmap[last - 1];
+			rmap[last - 1] = tmp;
+			last -= 1;
+			p = r2.Next(last);
+			a[rmap[p]/m + 1, rmap[p]%m + 1] = id;
+			tmp = rmap[p];
+			rmap[p] = rmap[last - 1];
+			rmap[last - 1] = tmp;
+			last -= 1;
+
+		}
+	}
 
 	public Tuple<int, int, int, int> SwapMaxX(int x1, int y1, int x2, int y2) {
 		if (x1 < x2)
@@ -101,6 +130,100 @@ public class PikachuMap
 			return new Tuple<int, int, int, int> (x2, y2, x1, y1);
 		else
 			return new Tuple<int, int, int, int> (x1, y1, x2, y2);
+	}
+
+
+	public void Update() {
+		not -= 1;
+	}
+
+	public bool ExistPair() {
+		// TODO
+		return true;
+	}
+
+	/*
+	return Tuple<bool, List<Tuple<int, int>>, bool>
+		Item1: Has path or not
+		Item2: List of position from (x1, y1) to (x1, y2), return empty list if Item = False
+		Item3: game finish or not
+	*/
+	public Tuple<bool, List<Tuple<int, int>>, bool> Move(int x1, int y1, int x2, int y2) {
+		Tuple<bool, List<Tuple<int, int>>> checkPath = HasPath(x1, y1, x2, y2);
+		if (checkPath.Item1)
+			Update();
+		switch (level) {
+			case 1:
+				break;
+			case 2:
+				break;
+			case 3:
+				if (checkPath.Item1) {
+					MoveUp(x1, y1, x2, y2);
+				}
+				break;
+			case 4:
+				if (checkPath.Item1) {
+					MoveUp(x1, y1, x2, y2);
+				}
+				break;
+			case 5:
+				if (checkPath.Item1) {
+					MoveDown(x1, y1, x2, y2);
+				}
+				break;
+			case 6:
+				if (checkPath.Item1) {
+					MoveDown(x1, y1, x2, y2);
+				}
+				break;
+			case 7:
+				if (checkPath.Item1) {
+					MoveLeft(x1, y1, x2, y2);
+				}
+				break;
+			case 8:
+				if (checkPath.Item1) {
+					MoveLeft(x1, y1, x2, y2);
+				}
+				break;
+			case 9:
+				if (checkPath.Item1) {
+					MoveRight(x1, y1, x2, y2);
+				}
+				break;
+			case 10:
+				if (checkPath.Item1) {
+					MoveRight(x1, y1, x2, y2);
+				}
+				break;
+			case 11:
+				if (checkPath.Item1) {
+					MoveCenterUpDown(x1, y1, x2, y2);
+				}
+				break;
+			case 12:
+				if (checkPath.Item1) {
+					MoveCenterUpDown(x1, y1, x2, y2);
+				}
+				break;
+			case 13:
+				if (checkPath.Item1) {
+					MoveCenterLeftRight(x1, y1, x2, y2);
+				}
+				break;
+			case 14:
+				if (checkPath.Item1) {
+					MoveCenterLeftRight(x1, y1, x2, y2);
+				}
+				break;
+		}
+		if (IsFinish()) {
+			return new Tuple<bool, List<Tuple<int, int>>, bool>(checkPath.Item1, checkPath.Item2, true);
+		}
+		if (!ExistPair())
+			ReCreateMap();
+		return new Tuple<bool, List<Tuple<int, int>>, bool>(checkPath.Item1, checkPath.Item2, false);;
 	}
 
 
@@ -273,11 +396,13 @@ public class PikachuMap
 		return IsFinish();
 	}
 	public bool IsFinish() {
-		for (int i = 1; i <= n; i++)
-			for (int j = 1; j <= m; j++)
-				if (a[i, j] != -1)
-					return false;
-		return true;
+		// for (int i = 1; i <= n; i++)
+		// 	for (int j = 1; j <= m; j++)
+		// 		if (a[i, j] != -1)
+		// 			return false;
+		if (not == 0)
+			return true;
+		return false;
 	}
 
 	public void LoadMap(string filename) {
@@ -308,15 +433,21 @@ public class PikachuMap
 	public static void Main()
 	{
 		PikachuMap p = new PikachuMap(9, 16, 30);
+		p.SetLevel(1);
+		Console.WriteLine("Original map");
 		p.LoadMap("map.txt");
 		p.ShowMap();
-		Tuple<bool, List<Tuple<int, int>>> res = p.HasPath(4, 6, 3, 10);
-		Console.WriteLine(res.Item1);
-		foreach (Tuple<int, int> pos in res.Item2) {
-			Console.WriteLine(pos);
-		}
-		p.MoveCenterUpDown(4, 6, 3, 10);
+		Console.WriteLine("new map");
+		p.ReCreateMap();
+		// p.LoadMap("map.txt");
+		// p.ShowMap();
+		// Tuple<bool, List<Tuple<int, int>>> res = p.HasPath(4, 6, 3, 10);
+		// Console.WriteLine(res.Item1);
+		// foreach (Tuple<int, int> pos in res.Item2) {
+		// 	Console.WriteLine(pos);
+		// }
+		// p.MoveCenterUpDown(4, 6, 3, 10);
 		p.ShowMap();
-		
+		p.Move(0, 0, 1, 1);
 	}
 }

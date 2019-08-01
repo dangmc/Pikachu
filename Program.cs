@@ -21,11 +21,12 @@ public class PikachuMap
 	int n, m; // map size
 	int noc; // number of characters
 	int not; // number of twin character
+	int nh; // number of suggestion
 	int level;
 	private List<int> map = new List<int>();
 
 
-	public PikachuMap(int n_, int m_, int noc_) {
+	public PikachuMap(int n_, int m_, int noc_, int nh_) {
 		n = n_;
 		m = m_;
 		noc = noc_;
@@ -42,6 +43,7 @@ public class PikachuMap
 		for (int i = 0; i < n; i++)
 			for (int j = 0; j < m; j++) 
 				map.Add(i * m + j);
+		nh = nh_;
 	}
 
 	public void SetLevel(int lv) {
@@ -50,7 +52,7 @@ public class PikachuMap
 
 
 	public void CreateMap() {
-		Random r1 = new Random(level);
+		Random r1 = new Random();
 		Random r2 = new Random(r1.Next(100));
 		int last = n*m;
 		not = last / 2;
@@ -74,7 +76,7 @@ public class PikachuMap
 	}
 
 	public void ReCreateMap() {
-		Random r1 = new Random(level);
+		Random r1 = new Random();
 		Random r2 = new Random(r1.Next(100));
 		int last = 0;
 		List<int> rmap = new List<int>();
@@ -137,9 +139,52 @@ public class PikachuMap
 		not -= 1;
 	}
 
-	public bool ExistPair() {
+	/*
+	return Tuple<bool, int, int, int, int>
+		- Item1: number of suggestion > 0 or not (co con luot suggest nua hay ko)
+		- Item2, Item3, Item4, Item5: x1, y1, x2, y2
+	*/
+	public Tuple<bool, int, int, int, int> Hint() {
 		// TODO
-		return true;
+		if (nh < 0)
+			return new Tuple<bool, int, int, int, int> (false, -1, -1, -1, -1);
+		return ExistPair();
+
+	}
+
+	/*
+	return Tuple<bool, int, int, int, int>
+		- Item1: Exist Pair or not
+		- Item2, Item3, Item4, Item5: x1, y1, x2, y2
+	*/
+	public Tuple<bool, int, int, int, int> ExistPair() {
+		// TODO
+		Dictionary<int, List<int>> L = new Dictionary<int, List<int>>();
+		for (int k = 0; k < noc; k++) {
+			List<int> P = new List<int>();
+			for (int i = 0; i < n; i++)
+				for (int j = 0; j < m; j++)
+					if (a[i + 1, j + 1] == k)
+						P.Add(i * m + j);
+			L.Add(k, P);
+		}
+		int x1, y1, x2, y2;
+		x1 = y1 = x2 = y2 = -1;
+		for (int k = 0; k < noc; k++) {
+			List<int> P = L[k];
+			foreach (int p1 in P)
+				foreach (int p2 in P)
+					if (p1 != p2) {
+						x1 = p1 / m + 1;
+						y1 = p1 % m + 1;
+						x2 = p2 / m + 1;
+						y2 = p2 % m + 1;
+						Tuple<bool, List<Tuple<int, int>>> checkpath = HasPath(x1, y1, x2 , y2);
+						if (checkpath.Item1)
+							return new Tuple<bool, int, int, int, int> (true, x1, y1, x2, y2);
+					}
+		}
+		return new Tuple<bool, int, int, int, int> (false, -1, -1, -1, -1);
 	}
 
 	/*
@@ -221,7 +266,7 @@ public class PikachuMap
 		if (IsFinish()) {
 			return new Tuple<bool, List<Tuple<int, int>>, bool>(checkPath.Item1, checkPath.Item2, true);
 		}
-		if (!ExistPair())
+		if (!(ExistPair().Item1))
 			ReCreateMap();
 		return new Tuple<bool, List<Tuple<int, int>>, bool>(checkPath.Item1, checkPath.Item2, false);;
 	}
@@ -395,11 +440,8 @@ public class PikachuMap
 		} 
 		return IsFinish();
 	}
+
 	public bool IsFinish() {
-		// for (int i = 1; i <= n; i++)
-		// 	for (int j = 1; j <= m; j++)
-		// 		if (a[i, j] != -1)
-		// 			return false;
 		if (not == 0)
 			return true;
 		return false;
@@ -432,22 +474,20 @@ public class PikachuMap
 
 	public static void Main()
 	{
-		PikachuMap p = new PikachuMap(9, 16, 30);
-		p.SetLevel(1);
+		PikachuMap p = new PikachuMap(9, 16, 30, 3);
+		p.SetLevel(3);
+		p.CreateMap();
 		Console.WriteLine("Original map");
-		p.LoadMap("map.txt");
 		p.ShowMap();
-		Console.WriteLine("new map");
-		p.ReCreateMap();
-		// p.LoadMap("map.txt");
+		// p.Move(1, 11, 1, 13);
+		// Console.WriteLine("New map");
 		// p.ShowMap();
-		// Tuple<bool, List<Tuple<int, int>>> res = p.HasPath(4, 6, 3, 10);
-		// Console.WriteLine(res.Item1);
-		// foreach (Tuple<int, int> pos in res.Item2) {
-		// 	Console.WriteLine(pos);
-		// }
-		// p.MoveCenterUpDown(4, 6, 3, 10);
+		// Tuple<bool, int, int, int, int> hint = p.Hint();
+		Console.WriteLine("ExistPair {0}", p.ExistPair().Item1);
+		Tuple<bool, List<Tuple<int, int>>, bool> move = p.Move(1, 1, 1, 2);
+		Console.WriteLine(move.Item3);
+		Console.WriteLine("New map");
 		p.ShowMap();
-		p.Move(0, 0, 1, 1);
+
 	}
 }

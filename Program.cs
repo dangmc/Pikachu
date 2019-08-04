@@ -220,12 +220,13 @@ namespace ConnectAnimals
         }
 
         /*
-        return Tuple<bool, List<Tuple<int, int>>, bool>
+        return Tuple<bool, List<Tuple<int, int>>,bool, bool>
             Item1: Has path or not
             Item2: List of position from (x1, y1) to (x1, y2), return empty list if Item = False
+            Item3: true if create new map otherwise false
             Item3: game finish or not
         */
-        public Tuple<bool, List<Tuple<int, int>>, bool> Move(int x1, int y1, int x2, int y2)
+        public Tuple<bool, List<Tuple<int, int>>, bool, bool> Move(int x1, int y1, int x2, int y2)
         {
             Tuple<bool, List<Tuple<int, int>>> checkPath = HasPath(x1, y1, x2, y2);
             if (checkPath.Item1)
@@ -317,13 +318,16 @@ namespace ConnectAnimals
                     }
                     break;
             }
+            bool createNewMap = false;
             if (IsFinish())
             {
-                return new Tuple<bool, List<Tuple<int, int>>, bool>(checkPath.Item1, checkPath.Item2, true);
+                return new Tuple<bool, List<Tuple<int, int>>, bool, bool>(checkPath.Item1, checkPath.Item2, createNewMap, true);
             }
-            if (!(ExistPair().Item1))
+            if (!(ExistPair().Item1)) {
                 ReCreateMap();
-            return new Tuple<bool, List<Tuple<int, int>>, bool>(checkPath.Item1, checkPath.Item2, false); ;
+                createNewMap = true;
+            }
+            return new Tuple<bool, List<Tuple<int, int>>, bool, bool>(checkPath.Item1, checkPath.Item2, createNewMap,false);
         }
 
 
@@ -571,19 +575,23 @@ namespace ConnectAnimals
         public static void Main()
         {
             PikachuMap p = new PikachuMap(9, 16, 30, 3);
-            p.SetLevel(3);
+            p.SetLevel(1);
             p.CreateMap();
-            Console.WriteLine("Original map");
+            Console.WriteLine("Level 1 map");
+            p.ShowMap();
+            p.SetLevel(2);
+            p.CreateMap();
+            Console.WriteLine("Level 2 map");
             p.ShowMap();
             // p.Move(1, 11, 1, 13);
             // Console.WriteLine("New map");
             // p.ShowMap();
             // Tuple<bool, int, int, int, int> hint = p.Hint();
-            Console.WriteLine("ExistPair {0}", p.ExistPair().Item1);
-            Tuple<bool, List<Tuple<int, int>>, bool> move = p.Move(1, 1, 1, 2);
-            Console.WriteLine(move.Item3);
-            Console.WriteLine("New map");
-            p.ShowMap();
+            // Console.WriteLine("ExistPair {0}", p.ExistPair().Item1);
+            // Tuple<bool, List<Tuple<int, int>>, bool> move = p.Move(1, 1, 1, 2);
+            // Console.WriteLine(move.Item3);
+            // Console.WriteLine("New map");
+            // p.ShowMap();
 
         }
 

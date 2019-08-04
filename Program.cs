@@ -233,8 +233,16 @@ namespace ConnectAnimals
             switch (level)
             {
                 case 1:
+                    if (checkPath.Item1) {
+                        a[x1, y1] = -1;
+                        a[x2, y2] = -1;
+                    }
                     break;
                 case 2:
+                    if (checkPath.Item1) {
+                        a[x1, y1] = -1;
+                        a[x2, y2] = -1;
+                    }
                     break;
                 case 3:
                     if (checkPath.Item1)
